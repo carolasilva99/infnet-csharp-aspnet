@@ -1,0 +1,109 @@
+﻿@model IEnumerable<GerenciadorAniversarios.Models.Pessoa>
+
+@{
+    ViewData["Title"] = "Gerenciador de Aniversários";
+}
+
+<h1>Gerenciador de Aniversários</h1>
+
+<p>
+    <a asp-action="Adicionar">Adicionar</a>
+</p>
+
+@using (Html.BeginForm())
+{
+    <p>
+        Buscar por nome: @Html.TextBox("pesquisa")  
+        <input type="submit" value="Pesquisar" /></p>
+}
+
+<h2 class="mt-5">Aniversariantes do dia!</h2>
+@{
+    var aniversariantes = Model.Where(pessoa => pessoa.DiasParaProximoAniversario() == 0);
+
+    if (aniversariantes.Any())
+    {
+        <table class="table">
+            <thead>
+            <tr>
+                <th>
+                    Nome
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DataNascimento)
+                </th>
+                <th>
+                    Dias para o próximo aniversário
+                </th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in aniversariantes)
+            {
+                <tr>
+                    <td>
+                        @item.MontarNomeCompleto()
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DataNascimento)
+                    </td>
+                    <td>
+                        @item.DiasParaProximoAniversario()
+                    </td>
+                    <td>
+                        <a asp-action="Editar" asp-route-id="@item.Id">Editar</a> |
+                        <a asp-action="Detalhes" asp-route-id="@item.Id">Detalhes</a> |
+                        <a asp-action="Excluir" asp-route-id="@item.Id">Excluir</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+
+    else
+    {
+        <p>Não existem aniversariantes hoje!</p>
+    }
+}
+
+
+<h2 class="mt-5">Seus contatos</h2>
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            @Html.ActionLink("Nome", "Index", new { ordenacao = ViewBag.OrdenacaoNome })
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DataNascimento)
+        </th>
+        <th>
+            @Html.ActionLink("Dias para o próximo aniversário", "Index", new { ordenacao = ViewBag.OrdenacaoDias })
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @item.MontarNomeCompleto()
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataNascimento)
+            </td>
+            <td>
+                @item.DiasParaProximoAniversario()
+            </td>
+            <td>
+                <a asp-action="Editar" asp-route-id="@item.Id">Editar</a> |
+                <a asp-action="Detalhes" asp-route-id="@item.Id">Detalhes</a> |
+                <a asp-action="Excluir" asp-route-id="@item.Id">Excluir</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
